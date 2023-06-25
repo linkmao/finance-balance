@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useGlobalState } from "../context/GlobalState"
+import { useGlobalState } from "../../context/GlobalState"
 
 function TransactionForm(){
   const {addTransaction}=useGlobalState()
@@ -9,9 +9,9 @@ function TransactionForm(){
 const buttonPress = e=>{
   e.preventDefault()
   addTransaction({
-    id:1,
+    id:window.crypto.randomUUID(),   // funcion del navegador que genera ID unicos
     description,
-    cantidad
+    cantidad:+cantidad  // Colocando el simbolo + adelante convierte el valor digitado en integer
   })
   console.log(description,cantidad)
 }
