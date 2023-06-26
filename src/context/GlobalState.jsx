@@ -1,4 +1,4 @@
-import {createContext, useContext, useReducer} from 'react'
+import {createContext, useContext, useEffect, useReducer} from 'react'
 import AppReducer from './AppReducer'
 
 const initialState={
@@ -14,7 +14,20 @@ export const useGlobalState = () =>{
 
 export const GlobalProvider = ({children})=>
 {
-  const [state, dispatch]= useReducer(AppReducer,initialState)  
+  // EL use redce ademas de inicializar el estado se puede colocar alternativamente una funcion que permita incializar tambien, tal como se muestra en este ejemplo donde se verifica si hay algo guarado en el local storage, de no ser así se usa entonces el initialState
+  const [state, dispatch]= useReducer(AppReducer,initialState,
+    ()=>{
+      const localData = localStorage.getItem('transacciones')
+      return localData ? JSON.parse(localData) : initialState
+    }
+    )  
+
+  // Para vigilar cuando cambia el estato y que este se guarde en el localStorage, se hace uso del useEffct
+
+  useEffect(()=>{
+    localStorage.setItem('transacciones', JSON.stringify(state))
+  },[state])
+    
   const addTransaction = (transaction)=>{
     dispatch({
       type:"ADD_TRANSACTION",
